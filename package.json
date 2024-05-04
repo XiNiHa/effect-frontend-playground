@@ -1,0 +1,21 @@
+{
+	"name": "effect-frontend-playground",
+	"private": true,
+	"version": "0.0.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "tsc && vite build",
+		"preview": "vite preview",
+		"check": "biome check ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.7.2",
+		"typescript": "^5.4.5",
+		"vite": "^5.2.11"
+	},
+	"dependencies": {
+		"effect": "^3.1.2",
+		"unocss": "^0.59.4"
+	}
+}
