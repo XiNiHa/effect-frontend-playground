@@ -1,27 +1,36 @@
-import { Effect, Schedule, pipe } from "effect";
+import { Console, Effect, Schedule, pipe } from "effect";
 import "uno.css";
 import { createComputed, createReaction, createSignal } from "./reactivity";
 
 const program = Effect.gen(function* () {
-	const [counter, setCounter] = yield* createSignal(0);
-	const isEven = yield* createComputed(
+	const [counter, setCounter] = createSignal(0);
+	const isEven = createComputed(
 		Effect.gen(function* () {
-			console.log("isEven");
+			yield* Console.log("isEven");
 			const value = yield* counter;
 			return value % 2 === 0;
 		}),
 	);
-	const parity = yield* createComputed(
+	const parity = createComputed(
 		Effect.gen(function* () {
-			console.log("parity");
+			yield* Console.log("parity");
 			const value = yield* isEven;
 			return value ? "even" : "odd";
+		}),
+	);
+	const divisibleBy5 = createComputed(
+		Effect.gen(function* () {
+			yield* Console.log("divisibleBy5");
+			const value = yield* counter;
+			return value % 5 === 0;
 		}),
 	);
 
 	yield* createReaction(
 		Effect.gen(function* () {
-			console.log("reaction", yield* parity);
+			yield* Console.log("reaction");
+			yield* Console.log("parity:", yield* parity);
+			yield* Console.log("divisibleBy5:", yield* divisibleBy5);
 		}),
 	);
 
@@ -29,7 +38,7 @@ const program = Effect.gen(function* () {
 		Effect.gen(function* () {
 			const value = yield* counter;
 			const newValue = value + (Math.random() > 0.5 ? 1 : 2);
-			console.log("newValue", newValue);
+			yield* Console.log("newValue", newValue);
 			yield* setCounter(newValue);
 		}),
 		Effect.schedule(
@@ -38,7 +47,6 @@ const program = Effect.gen(function* () {
 	);
 });
 
-Effect.runPromiseExit(program)
-	.then((exit) => {
-		console.log("exit", exit);
-	})
+Effect.runPromiseExit(program).then((exit) => {
+	console.log("exit", exit);
+});
